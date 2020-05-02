@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -9,8 +9,11 @@ use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductCard;
+use Illuminate\Support\Facades\Auth;
+use App\User;
+use App\Http\Controllers\Api\BaseApiController as BaseApiController;
 
-class ProductController extends Controller
+class ProductController  extends BaseApiController
 {
     /**
      * Display a listing of the resource.
@@ -23,10 +26,10 @@ class ProductController extends Controller
         $categories = Category::all();
         return ProductResource::collection($products)
                             ->additional([
-                                'categories' => CategoryResource::collection($categories),
-                                'banner' => Product::orderBy('id', 'desc')->select('name as title', 'image')->get()->take(5),
-                                'status' => 200,
-                                'message' => 'product get successfully.',
+                                'categories'    => CategoryResource::collection($categories),
+                                'banner'        => Product::orderBy('id', 'desc')->select('name as title', 'image')->get()->take(5),
+                                'status'        => 200,
+                                'message'       => 'product get successfully.',
                             ]);
     }
 
@@ -101,41 +104,40 @@ class ProductController extends Controller
         $products = Product::with('category')->where('category_id', $id)->paginate(20);
         $categories = Category::all();
         if($products->isEmpty()){
-            return response()->json([
+            return $this->respondNotFound('Product not found!');
+        }else{
+            $result = [
                 'ProductCategory' => ProductResource::collection($products),
-                'message'=>'Product added card successfully.',
-                'links' => [
-                    'first' => $products->toArray()['first_page_url'] ?? null,
-                    'last' => $products->toArray()['last_page_url'] ?? null,
-                    'prev' => $products->toArray()['prev_page_url'] ?? null,
-                    'next' => $products->toArray()['next_page_url'] ?? null,
-                ],
-                'meta' => [
+                // 'links' => [
+                //     'first' => $products->toArray()['first_page_url'] ?? null,
+                //     'last' => $products->toArray()['last_page_url'] ?? null,
+                //     'prev' => $products->toArray()['prev_page_url'] ?? null,
+                //     'next' => $products->toArray()['next_page_url'] ?? null,
+                // ],
+                'paginator' => [
                     "current_page" => $products->currentPage(),
                     "last_page" =>  $products->lastPage(),
                     "path" =>  $products->path(),
                     "per_page" =>  $products->perPage(),
                     "total" =>  $products->total()
-                ],
-                'status' => 200,
-                'message' => 'product get successfully.'
-            ], 200); 
-        }else{
-            return response()->json(['error'=>'Product not found!'], 404); 
+                ]
+            ]; 
+            return $this->sendResponse($result, 'article retrieved successfully.');
         }
-
-       
     }
 
     public function favProduct($id)
     {
+        // return response()->json([Auth::user()], 200); 
         $product_card = ProductCard::where('product_id', $id)->where('user_id', \Auth::id())->first();
         if($product_card){
-            return response()->json(['error'=>'Unauthorised'], 401); 
+            $product_card->delete();
+            return response()->json(['message'=>'Product remved card successfully.'], 200); 
+            // return response()->json(['error'=>'Unauthorised'], 401); 
         }else{
-            $product_card = new ProductCard;
-            $product_card->product_id = $id;
-            $product_card->user_id = \Auth::id();
+            $product_card               = new ProductCard;
+            $product_card->product_id   = $id;
+            $product_card->user_id      = \Auth::id();
             $product_card->save();
             return response()->json(['message'=>'Product added card successfully.'], 200); 
         }

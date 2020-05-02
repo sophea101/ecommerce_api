@@ -16,8 +16,8 @@ class AuthController extends Controller
     public function login()
     {
         $validator = Validator::make(request()->all(), [
-            'phone'     => 'required', 
-            'password'  => 'required'
+            'phone' => 'required', 
+            'password' => 'required'
         ]);
         if ($validator->fails()) { 
             return response()->json(['error'=>$validator->errors()], 401);            
@@ -28,7 +28,7 @@ class AuthController extends Controller
             $success['token'] =  $user->createToken('MyApp')-> accessToken; 
             return response()->json([
                 'token' => $success['token'],
-                'name'  => $user->name,
+                'name' => $user->name,
                 'email' => $user->email,
                 'phone' => $user->phone,
             ], $this-> successStatus); 
@@ -41,19 +41,19 @@ class AuthController extends Controller
     public function register(Request $request) 
     { 
         $validator = Validator::make($request->all(), [ 
-            'name'      => 'required', 
-            'email'     => 'required|unique:users,email', 
-            'password'  => 'required', 
-            'phone'     => 'required|unique:users,phone',
-            'c_password'=> 'required|same:password', 
+            'name' => 'required', 
+            'email' => 'required|unique:users,email', 
+            'password' => 'required', 
+            'phone' => 'required|unique:users,phone',
+            'c_password' => 'required|same:password', 
         ]);
         if ($validator->fails()) { 
             return response()->json([$validator->errors()], 401);            
         }else{
-            $input              = $request->all(); 
-            $input['password']  = bcrypt($input['password']); 
-            $user               = User::create($input); 
-            $success['token']   =  $user->createToken('MyApp')-> accessToken; 
+            $input = $request->all(); 
+            $input['password'] = bcrypt($input['password']); 
+            $user = User::create($input); 
+            $success['token'] =  $user->createToken('MyApp')-> accessToken; 
             return response()->json($success, $this-> successStatus); 
         }
         
@@ -68,8 +68,8 @@ class AuthController extends Controller
     public function resetPassword()
     {
         $validator = Validator::make(request()->all(), [ 
-            'email'     => 'required',
-            'password'  => 'required'
+            'email' => 'required',
+            'password' => 'required'
         ]);
         if ($validator->fails()) { 
             return response()->json(['error'=>$validator->errors()], 401);            
@@ -80,9 +80,9 @@ class AuthController extends Controller
                 'password' => bcrypt(request()['password'])
             ]);
             $success = 'Password reset successfully.';
-            return response()->json(['success'  =>$success], $this-> successStatus); 
+            return response()->json(['success'=>$success], $this-> successStatus); 
         }else{
-            return response()->json(['error'    =>'Your Phone or Email not found!'], 404); 
+            return response()->json(['error'=>'Your Phone or Email not found!'], 404); 
         }
     }
 
@@ -91,8 +91,8 @@ class AuthController extends Controller
         $users = User::paginate(20);
         return UserResource::collection($users)
                             ->additional([
-                                'status'    => 200,
-                                'message'   => 'User get successfully.'
+                                'status' => 200,
+                                'message' => 'User get successfully.'
                             ]);
     }
 }
