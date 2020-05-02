@@ -17,13 +17,13 @@ class ProductResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'code' => $this->code,
+            'product_code' => $this->product_code,
             'category' => $this->category?$this->category->name:null,
             'image' => $this->image,
-            'net_price' => '$'.$this->net_price,
-            'cost' => '$'.$this->cost,
+            'unit_price' => '$'.$this->unit_price,
+            'qty' => '$'.$this->qty,
             'discount' => $this->discount."%",
-            'product_after_discount' => '$'.($this->cost - ($this->cost/100)*$this->discount),
+            'product_after_discount' => '$'.($this->unit_price - ($this->unit_price/100)*$this->discount),
             'hits' => $this->hits,
             'description' => $this->description
         ];

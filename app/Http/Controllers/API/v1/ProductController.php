@@ -8,7 +8,7 @@ use App\Http\Resources\ProductResource;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use App\Models\Product;
-use App\Models\ProductCard;
+use App\Models\Favorite;
 use Illuminate\Support\Facades\Auth;
 use App\User;
 use App\Http\Controllers\Api\BaseApiController as BaseApiController;
@@ -129,17 +129,17 @@ class ProductController  extends BaseApiController
     public function favProduct($id)
     {
         // return response()->json([Auth::user()], 200); 
-        $product_card = ProductCard::where('product_id', $id)->where('user_id', \Auth::id())->first();
-        if($product_card){
-            $product_card->delete();
-            return response()->json(['message'=>'Product remved card successfully.'], 200); 
+        $favorite = Favorite::where('product_id', $id)->where('user_id', \Auth::id())->first();
+        if($favorite){
+            $favorite->delete();
+            return response()->json(['message'=>'Product remved favorite successfully.'], 200); 
             // return response()->json(['error'=>'Unauthorised'], 401); 
         }else{
-            $product_card               = new ProductCard;
-            $product_card->product_id   = $id;
-            $product_card->user_id      = \Auth::id();
-            $product_card->save();
-            return response()->json(['message'=>'Product added card successfully.'], 200); 
+            $favorite               = new Favorite;
+            $favorite->product_id   = $id;
+            $favorite->user_id      = \Auth::id();
+            $favorite->save();
+            return response()->json(['message'=>'Product added favorite successfully.'], 200); 
         }
     }
 }

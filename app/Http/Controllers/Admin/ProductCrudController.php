@@ -30,7 +30,7 @@ class ProductCrudController extends CrudController
     {
         // TODO: remove setFromDb() and manually define Columns, maybe Filters
         // $this->crud->setFromDb();
-        $this->crud->addColumn(['name' => 'code', 'label' => "Code", 'type' => 'Text']);
+        $this->crud->addColumn(['name' => 'product_code', 'label' => "Product Code", 'type' => 'Text']);
         $this->crud->addColumn(['name' => 'name', 'label' => "Name", 'type' => 'Text']);
         $this->crud->addColumn([
             'name'      => 'image', // The db column name
@@ -54,8 +54,8 @@ class ProductCrudController extends CrudController
             'attribute' => 'name',
             'model'     => 'App\Models\Unit'
         ]);
-        $this->crud->addColumn(['name' => 'net_price', 'label' => "Net Price", 'type' => 'Text']);
-        $this->crud->addColumn(['name' => 'cost', 'label' => "Cost", 'type' => 'Text']);
+        $this->crud->addColumn(['name' => 'unit_price', 'label' => "Unit Price", 'type' => 'Text']);
+        $this->crud->addColumn(['name' => 'qty', 'label' => "QTY", 'type' => 'Text']);
         $this->crud->addColumn(['name' => 'discount', 'label' => "Discount", 'type' => 'Text']);
     }
 
@@ -65,7 +65,7 @@ class ProductCrudController extends CrudController
 
         // TODO: remove setFromDb() and manually define Fields
         // $this->crud->setFromDb();
-        $this->crud->addField(['name' => 'code', 'type' => 'text', 'label' => 'Code']);
+        $this->crud->addField(['name' => 'product_code', 'type' => 'text', 'label' => 'Product Code']);
         $this->crud->addField(['name' => 'name', 'type' => 'text', 'label' => 'Name']);
         $this->crud->addField([  // Select2
             'label'     => "Category",
@@ -94,8 +94,8 @@ class ProductCrudController extends CrudController
             })
         ]);
         $this->crud->addField([   // Number
-            'name'      => 'net_price',
-            'label'     => 'Net Price',
+            'name'      => 'unit_price',
+            'label'     => 'Unit Price',
             'type'      => 'number',
             // optionals
             'attributes'=> ["step" => "any"],
@@ -103,12 +103,12 @@ class ProductCrudController extends CrudController
             // 'suffix' => ".00",
         ]);
         $this->crud->addField([   // Number
-            'name'          => 'cost',
-            'label'         => 'Cost',
+            'name'          => 'qty',
+            'label'         => 'QTY',
             'type'          => 'number',
             // optionals
-            'attributes'    => ["step" => "any"],
-            'prefix'        => "$",
+            // 'attributes'    => ["step" => "any"],
+            // 'prefix'        => "$",
             // 'suffix' => ".00",
         ]);
 
@@ -118,7 +118,7 @@ class ProductCrudController extends CrudController
             'type' => 'number',
             // optionals
             'attributes' => ["step" => "any"],
-            'prefix' => "$",
+            'prefix' => "%",
             // 'suffix' => ".00",
         ]);
 

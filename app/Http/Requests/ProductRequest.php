@@ -26,13 +26,14 @@ class ProductRequest extends FormRequest
     public function rules()
     {
         return [
-            'code' => 'required|min:3|max:255|unique:products,code,'.\Request::segment(3),
+            'product_code' => 'required|min:3|max:255|unique:products,product_code,'.\Request::segment(3),
             'name' => 'required|min:3|max:255',
             'unit_id' => 'required|numeric',
             'category_id' => 'required|numeric',
-            'net_price' => 'required',
-            'cost' => 'required',
+            'unit_price' => 'required',
+            'qty' => 'required',
             'image' => 'required',
+            'discount' => 'required|min:0|max:99',
         ];
     }
 
