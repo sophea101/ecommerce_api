@@ -60,9 +60,10 @@ class ProductController  extends BaseApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($product_id)
     {
-        //
+        $product = new ProductResource(Product::find($product_id));
+        return response()->json(['success' => $product], 200); 
     }
 
     /**

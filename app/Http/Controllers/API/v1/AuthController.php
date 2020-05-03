@@ -5,9 +5,11 @@ namespace App\Http\Controllers\API\v1;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\RoleResource as RoleResource;
 use Illuminate\Http\Request;
 use Validator;
 use App\User;
+use App\Models\Roles;
 
 class AuthController extends Controller
 {
@@ -32,8 +34,8 @@ class AuthController extends Controller
             //     'email' => $user->email,
             //     'phone' => $user->phone,
             // ], $this-> successStatus); 
-            
-        return response()->json(['token' => $success['token'],'data' => $user], $this-> successStatus); 
+            $role = new RoleResource(Roles::find($user['role_id']));
+        return response()->json(['token' => $success['token'],'data' => $user,'role'=>$role], $this-> successStatus); 
         } 
         else{ 
             return response()->json(['error'=>'Unauthorised'], 401); 
@@ -74,10 +76,15 @@ class AuthController extends Controller
         ]);
     }
     
-    public function user() 
+    public function user($id = '0') 
     { 
-        $user = Auth::user(); 
-        return response()->json(['success' => $user], $this-> successStatus); 
+        if($id != '0'){
+            $user = new UserResource(User::find($id));
+        } else {
+            $user = Auth::user(); 
+        }
+        $role = new RoleResource(Roles::find($user['role_id']));
+        return response()->json(['success' => $user,'role'=>$role], $this-> successStatus); 
     } 
 
     public function resetPassword()
